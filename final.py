@@ -145,7 +145,7 @@ while choice != "0":
 #exit:
 	if choice == "0":
 		print("Good-bye.")
-
+###########################################
 #new:*
 	if choice == "1":
 		if os.path.exists(os.getcwd() + name + ".dat"):
@@ -159,7 +159,7 @@ while choice != "0":
 				save(os.getcwd() + newName, player)
 		else:
 			save(os.getcwd() + name + ".dat", player)
-
+###########################################
 #save:*
 if choice == "2":
 	if not os.path.exists(os.getcwd() + name + ".dat"):
