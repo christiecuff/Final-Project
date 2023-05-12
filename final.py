@@ -166,7 +166,8 @@ if choice == "2":
 		new = input("Create new save? [y/n] ")
 		if new == 'y':
 			save(os.getcwd() + name + ".dat", player)
-
+	else:
+		save(os.getcwd() + name + ".dat")
 ###########################################
 #loading:*
 	if choice == "3":
