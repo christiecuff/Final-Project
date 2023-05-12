@@ -68,7 +68,6 @@ the kitchen talking to Elliot about the food he has preparded for Mr. Henderson
 
 from time import sleep
 from random import randint
-import os
 inventory = []
 position = [0, 1]
 Weapons = ['knife','pen']
@@ -140,16 +139,3 @@ def getRandSolution():
 	room = Rooms[randint(0, len(Rooms))]
 	murderer = People[randint(0, len(People))]
 	return (murderer, room, weapon)
-
-def readNotes():
-	if os.path.isfile('notes.dat'):
-		notes = open('notes.dat', 'r').read()
-	else:
-		slowPrint('No current notes')
-		return
-	slowPrint(notes)
-
-def editNotes():
-	if not os.path.isfile('notes.dat'):
-		os.system('touch notes.dat')
-	os.system('gedit notes.dat')
