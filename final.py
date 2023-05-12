@@ -178,4 +178,8 @@ the kitchen talking to Elliot about the food he has preparded for Mr. Henderson
 
 		print('''---------------------------------------------------------------------
 ''')
+	if choice == "4":
+		printMap(RoomOrder)
+	if choice == "5":
+		printInventory()
 	
