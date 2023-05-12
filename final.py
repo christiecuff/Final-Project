@@ -58,3 +58,98 @@ the kitchen talking to Elliot about the food he has preparded for Mr. Henderson
 
 		print('''---------------------------------------------------------------------
 ''')
+		
+		
+		
+		
+		
+		
+#Shang's Code:
+
+from time import sleep
+from random import randint
+import os
+inventory = []
+position = [0, 1]
+Weapons = ['knife','pen']
+Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
+RoomOrder = [['kitchen','hallway','dining'],['library','ballroom','study'],['bathroom','living','closet']]
+People = ['maid', 'cook', 'wife', 'butler']
+Items = ['book','bucket','mop','music','keys']
+
+#SOLUTION
+weapon = None
+room = None
+murderer = None
+
+def slowPrint(text, delay=0.005):
+	for i in text:
+		print(i, end='', flush=True)
+		sleep(delay)
+	print('')
+
+def addItem(item, count):
+	if item.lower() in Items and len(inventory)+count <= 15:
+		for i in range(count):
+			inventory.append(item.lower())
+		slowPrint("Item(s) added to inventory")
+	elif not item.lower() in Items:
+		slowPrint('Item not found, here are the items available:')
+		for item in Items:
+			slowPrint(item.capitalize())
+	elif len(inventory) > 15:
+		slowPrint('Inventory is full')
+
+def removeItem(item, count):
+	if item in inventory:
+		for i in range(count):
+			inventory.remove(item)
+		slowPrint("Item(s) removed from inventory")
+	else:
+		slowPrint("Item not in inventory")
+
+def printInventory():
+	items = {}
+	if len(inventory) > 0:
+		slowPrint("Here is your inventory:")
+		for item in inventory:
+			if item in items:
+				items[item] = items[item] + 1
+			else:
+				items[item] = 1
+		for item in items:
+			slowPrint(item.capitalize() + ": " + str(items[item]))
+	else:
+		slowPrint("Your inventory is empty")
+		
+def move(dir):
+	if dir == 'right' and position[1] < 2:
+		position[1] += 1
+	if dir == 'left' and position[1] > 0:
+		position[1] -= 1
+	if dir == 'up' and position[0] < 2:
+		position[0] += 1
+	if dir == 'down' and position[0] > 0:
+		position[0] -= 1
+		
+def printRoom(pos=position):
+	print(RoomOrder[pos[0]][pos[1]].capitalize())
+
+def getRandSolution():
+	weapon = Weapons[randint(0, len(Weapons))]
+	room = Rooms[randint(0, len(Rooms))]
+	murderer = People[randint(0, len(People))]
+	return (murderer, room, weapon)
+
+def readNotes():
+	if os.path.isfile('notes.dat'):
+		notes = open('notes.dat', 'r').read()
+	else:
+		slowPrint('No current notes')
+		return
+	slowPrint(notes)
+
+def editNotes():
+	if not os.path.isfile('notes.dat'):
+		os.system('touch notes.dat')
+	os.system('gedit notes.dat')
