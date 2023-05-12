@@ -101,7 +101,6 @@ def getRandSolution():
 	weapon = Weapons[randint(0, len(Weapons))]
 	room = Rooms[randint(0, len(Rooms))]
 	murderer = People[randint(0, len(People))]
-	return (murderer, room, weapon)
 
 #############################start of the game###################################
 print("\tMan's Homocide\n")
