@@ -6,7 +6,7 @@ class player():
 	def __init__(self, pos, inventory):
 		self.pos = pos
 		self.inventory = inventory
-		
+
 	def getDict(self):
 		return {'pos':self.pos,'inv':self.inventory}
 	
@@ -14,13 +14,12 @@ class player():
 		self.pos = dict['pos']
 		self.inventory = dict['inv']
 
-position = [0, 1]
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
 RoomOrder = [['kitchen','hallway','dining'],['library','ballroom','study'],['bathroom','living','closet']]
 People = ['maid', 'cook', 'wife', 'butler']
 Items = ['book','bucket','mop','music','keys']
-player = player(position, [])
+player = player([0,1], [])
 
 #SOLUTION
 weapon = None
@@ -69,14 +68,14 @@ def printInventory():
 		slowPrint("Your inventory is empty")
 		
 def move(dir):
-	if dir == 'right' and position[1] < 2:
-		position[1] += 1
-	if dir == 'left' and position[1] > 0:
-		position[1] -= 1
-	if dir == 'up' and position[0] < 2:
-		position[0] += 1
-	if dir == 'down' and position[0] > 0:
-		position[0] -= 1
+	if dir == 'right' and player.position[1] < 2:
+		player.position[1] += 1
+	if dir == 'left' and player.position[1] > 0:
+		player.position[1] -= 1
+	if dir == 'up' and player.position[0] < 2:
+		player.position[0] += 1
+	if dir == 'down' and player.position[0] > 0:
+		player.position[0] -= 1
 		
 def save(path, player):
 	with open(path, 'wb') as file:
@@ -95,7 +94,7 @@ def printMap(map):
 	print('\n You are in the ' + printRoom())
 	print('------------------------------------------ \n')
 	
-def printRoom(pos=position):
+def printRoom(pos=player.position):
 	print(RoomOrder[pos[0]][pos[1]].capitalize())
 
 def getRandSolution():
