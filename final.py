@@ -3,16 +3,18 @@ from random import randint
 import pickle
 import os
 class player():
-	def __init__(self, pos, inventory):
+	def __init__(self, pos, inventory, size):
 		self.pos = pos
 		self.inventory = inventory
+		self.inventorySize = size
 
 	def getDict(self):
-		return {'pos':self.pos,'inv':self.inventory}
+		return {'pos':self.pos,'inv':self.inventory,'size':self.inventorySize}
 	
 	def setPlayerFromDict(self, dict):
 		self.pos = dict['pos']
 		self.inventory = dict['inv']
+		self.inventorySize = dict['size']
 
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
@@ -34,7 +36,7 @@ def slowPrint(text, delay=0.005):
 	print('')
 
 def addItem(item, count):
-	if item.lower() in Items and len(player.inventory)+count <= 15:
+	if item.lower() in Items and len(player.inventory)+count <= player.inventorySize:
 		for i in range(count):
 			player.inventory.append(item.lower())
 		slowPrint("Item(s) added to inventory")
@@ -42,7 +44,7 @@ def addItem(item, count):
 		slowPrint('Item not found, here are the items available:')
 		for item in Items:
 			slowPrint(item.capitalize())
-	elif len(player.inventory) > 15:
+	elif len(player.inventory) > player.inventorySize:
 		slowPrint('Iinventory is full')
 
 def removeItem(item, count):
@@ -84,7 +86,7 @@ def save(path, player):
 def load(path) -> player:
 	with open(path) as file:
 		obj = pickle.load(file)
-	return player(obj['pos'],obj['inv'])
+	return player(obj['pos'],obj['inv'],obj['size'])
 		
 def printMap(map):
 	for level in map:
