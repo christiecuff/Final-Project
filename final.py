@@ -3,6 +3,7 @@ from random import randint
 import pickle
 import os
 
+
 class player():
 	def __init__(self, pos, inventory, size, solution):
 		self.pos = pos
@@ -19,18 +20,18 @@ class player():
 		self.inventorySize = dict['size']
 		self.solution = dict['solution']
 
+
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
 RoomOrder = [['kitchen','hallway','dining'],['library','ballroom','study'],['bathroom','living','closet']]
 People = ['maid', 'cook', 'wife', 'butler']
 Items = ['book','bucket','mop','music','keys']
-player = player([0,1], [])
+player = player([0,1], [], 15, ())
 
 #SOLUTION
 weapon = None
 room = None
 murderer = None
-
 
 def slowPrint(text, delay=0.005):
 	for i in text:
@@ -73,14 +74,14 @@ def printInventory():
 		slowPrint("Your inventory is empty")
 		
 def move(dir):
-	if dir == 'right' and player.position[1] < 2:
-		player.position[1] += 1
-	if dir == 'left' and player.position[1] > 0:
-		player.position[1] -= 1
-	if dir == 'up' and player.position[0] < 2:
-		player.position[0] += 1
-	if dir == 'down' and player.position[0] > 0:
-		player.position[0] -= 1
+	if dir == 'right' and player.pos[1] < 2:
+		player.pos[1] += 1
+	if dir == 'left' and player.pos[1] > 0:
+		player.pos[1] -= 1
+	if dir == 'up' and player.pos[0] < 2:
+		player.pos[0] += 1
+	if dir == 'down' and player.pos[0] > 0:
+		player.pos[0] -= 1
 		
 def save(path, player):
 	with open(path, 'wb') as file:
@@ -99,13 +100,18 @@ def printMap(map):
 	print('\n You are in the ' + printRoom())
 	print('------------------------------------------ \n')
 	
-def printRoom(pos=player.position):
+def printRoom(pos=player.pos):
 	print(RoomOrder[pos[0]][pos[1]].capitalize())
 
 def getRandSolution():
-	weapon = Weapons[randint(0, len(Weapons))]
-	room = Rooms[randint(0, len(Rooms))]
-	murderer = People[randint(0, len(People))]
+	weapon = Weapons[randint(0, len(Weapons)-1)]
+	room = Rooms[randint(0, len(Rooms)-1)]
+	murderer = People[randint(0, len(People)-1)]
+	return(weapon, room, murderer)
+
+player.solution = getRandSolution()
+
+
 
 #############################start of the game###################################
 print("\tMan's Homocide\n")
