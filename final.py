@@ -1,3 +1,8 @@
+def slowPrint(text, delay=0.005):
+	for i in text:
+		print(i, end='', flush=True)
+		sleep(delay)
+	print('')
 
 #############################start of the game###################################
 print("\tMan's Homocide\n")
@@ -81,12 +86,6 @@ weapon = None
 room = None
 murderer = None
 
-def slowPrint(text, delay=0.005):
-	for i in text:
-		print(i, end='', flush=True)
-		sleep(delay)
-	print('')
-
 def addItem(item, count):
 	if item.lower() in Items and len(inventory)+count <= 15:
 		for i in range(count):
@@ -131,6 +130,15 @@ def move(dir):
 	if dir == 'down' and position[0] > 0:
 		position[0] -= 1
 		
+		
+def printMap(map):
+	for level in map:
+		for room in level:
+			print(room + "; ", end='', flush=True)
+		print("\n", end='', flush=True)
+	print('\n You are in the ' + printRoom())
+	print('------------------------------------------ \n')
+	
 def printRoom(pos=position):
 	print(RoomOrder[pos[0]][pos[1]].capitalize())
 
