@@ -184,7 +184,7 @@ if choice == "2":
 			print("Save not found!")
 ###########################################
 #Suspects statement
-	if choice == "4":
+	if choice == '4':
 		print('''Millie Parker has been a maid in the in the Henderson
 house hold for 8 years. She took care of Josh henderson after his parents 
 died in a car crash 2 years before he enharited the Henderson house.
