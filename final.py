@@ -1,12 +1,23 @@
 from time import sleep
 from random import randint
-inventory = []
+import pickle
+import os
+class player():
+	def __init__(self, pos, inventory):
+		self.pos = pos
+		self.inventory = inventory
+	def getDict(self):
+		return {'pos':self.pos,'inv':self.inventory}
+	def setPlayerFromDict(self, dict):
+		self.pos = dict['pos']
+		self.inventory = dict['inv']
 position = [0, 1]
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
 RoomOrder = [['kitchen','hallway','dining'],['library','ballroom','study'],['bathroom','living','closet']]
 People = ['maid', 'cook', 'wife', 'butler']
 Items = ['book','bucket','mop','music','keys']
+player = player(position, [])
 
 #SOLUTION
 weapon = None
@@ -21,30 +32,30 @@ def slowPrint(text, delay=0.005):
 	print('')
 
 def addItem(item, count):
-	if item.lower() in Items and len(inventory)+count <= 15:
+	if item.lower() in Items and len(player.inventory)+count <= 15:
 		for i in range(count):
-			inventory.append(item.lower())
+			player.inventory.append(item.lower())
 		slowPrint("Item(s) added to inventory")
 	elif not item.lower() in Items:
 		slowPrint('Item not found, here are the items available:')
 		for item in Items:
 			slowPrint(item.capitalize())
-	elif len(inventory) > 15:
-		slowPrint('Inventory is full')
+	elif len(player.inventory) > 15:
+		slowPrint('Iinventory is full')
 
 def removeItem(item, count):
-	if item in inventory:
+	if item in player.inventory:
 		for i in range(count):
-			inventory.remove(item)
+			player.inventory.remove(item)
 		slowPrint("Item(s) removed from inventory")
 	else:
 		slowPrint("Item not in inventory")
 
 def printInventory():
 	items = {}
-	if len(inventory) > 0:
+	if len(player.inventory) > 0:
 		slowPrint("Here is your inventory:")
-		for item in inventory:
+		for item in player.inventory:
 			if item in items:
 				items[item] = items[item] + 1
 			else:
@@ -64,6 +75,14 @@ def move(dir):
 	if dir == 'down' and position[0] > 0:
 		position[0] -= 1
 		
+def save(path, player):
+	with open(path, 'wb') as file:
+		pickle.dump(player.getDict(), file)
+
+def load(path) -> player:
+	with open(path) as file:
+		obj = pickle.load(file)
+	return player(obj['pos'],obj['inv'])
 		
 def printMap(map):
 	for level in map:
@@ -121,10 +140,27 @@ while choice != "0":
 		print("Good-bye.")
 
 #save:*
+	if choice == "1":
+		if os.path.exists(os.getcwd() + name + ".dat"):
+			overwrite = input("Save file exists, overwrite? [y/n]")
+			if overwrite == "y":
+				save(os.getcwd() + name + ".dat", player)
+			elif overwrite == "n":
+				newName == ""
+				while not newName == name + ".dat":
+					newName = input("Save name? ")
+				save(os.getcwd() + newName, player)
+		else:
+			save(os.getcwd() + name + ".dat", player)
 
 ###########################################
 #loading:*
-
+	if choice == "2":
+		location = input("Save file? ")
+		if os.path.exists(os.getcwd() + location):
+			player = load(os.getcwd() + location)
+		else:
+			print("Save not found!")
 ###########################################
 
 #Suspects statement
