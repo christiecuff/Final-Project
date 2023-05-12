@@ -167,13 +167,13 @@ while choice != "0":
 			save(os.getcwd() + name + ".dat", player)
 ###########################################
 #save:*
-if choice == "2":
-	if not os.path.exists(os.getcwd() + name + ".dat"):
-		new = input("Create new save? [y/n] ")
-		if new == 'y':
-			save(os.getcwd() + name + ".dat", player)
-	else:
-		save(os.getcwd() + name + ".dat")
+	if choice == "2":
+		if not os.path.exists(os.getcwd() + name + ".dat"):
+			new = input("Create new save? [y/n] ")
+			if new == 'y':
+				save(os.getcwd() + name + ".dat", player)
+		else:
+			save(os.getcwd() + name + ".dat")
 ###########################################
 #loading:*
 	if choice == "3":
