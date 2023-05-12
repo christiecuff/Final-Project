@@ -6,11 +6,14 @@ class player():
 	def __init__(self, pos, inventory):
 		self.pos = pos
 		self.inventory = inventory
+		
 	def getDict(self):
 		return {'pos':self.pos,'inv':self.inventory}
+	
 	def setPlayerFromDict(self, dict):
 		self.pos = dict['pos']
 		self.inventory = dict['inv']
+
 position = [0, 1]
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
@@ -162,10 +165,9 @@ while choice != "0":
 		else:
 			print("Save not found!")
 ###########################################
-
 #Suspects statement
 	if choice == "3":
-		input('''Millie Parker has been a maid in the in the Henderson
+		print('''Millie Parker has been a maid in the in the Henderson
 house hold for 8 years. She took care of Josh henderson after his parents 
 died in a car crash 2 years before he enharited the Henderson house.
 
