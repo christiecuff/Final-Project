@@ -2,19 +2,22 @@ from time import sleep
 from random import randint
 import pickle
 import os
+
 class player():
-	def __init__(self, pos, inventory, size):
+	def __init__(self, pos, inventory, size, solution):
 		self.pos = pos
 		self.inventory = inventory
 		self.inventorySize = size
+		self.solution = solution
 
 	def getDict(self):
-		return {'pos':self.pos,'inv':self.inventory,'size':self.inventorySize}
+		return {'pos':self.pos,'inv':self.inventory,'size':self.inventorySize,'solution':self.solution}
 	
 	def setPlayerFromDict(self, dict):
 		self.pos = dict['pos']
 		self.inventory = dict['inv']
 		self.inventorySize = dict['size']
+		self.solution = dict['solution']
 
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
@@ -86,7 +89,7 @@ def save(path, player):
 def load(path) -> player:
 	with open(path) as file:
 		obj = pickle.load(file)
-	return player(obj['pos'],obj['inv'],obj['size'])
+	return player(obj['pos'],obj['inv'],obj['size'],obj['solution'])
 		
 def printMap(map):
 	for level in map:
@@ -129,11 +132,12 @@ while choice != "0":
 	("""
 	       Man's Homocide
 	0 - Quit
-	1 - Save
-	2 - Load
-	3 - Suspects statements
-	4 - Map
-	5 - Inventory
+	1 - New save
+	2 - Save
+	3 - Load
+	4 - Suspects statements
+	5 - Map
+	6 - Inventory
 	""")
 
 	choice = input("Option:\n")
@@ -142,7 +146,7 @@ while choice != "0":
 	if choice == "0":
 		print("Good-bye.")
 
-#save:*
+#new:*
 	if choice == "1":
 		if os.path.exists(os.getcwd() + name + ".dat"):
 			overwrite = input("Save file exists, overwrite? [y/n]")
@@ -156,9 +160,16 @@ while choice != "0":
 		else:
 			save(os.getcwd() + name + ".dat", player)
 
+#save:*
+if choice == "2":
+	if not os.path.exists(os.getcwd() + name + ".dat"):
+		new = input("Create new save? [y/n] ")
+		if new == 'y':
+			save(os.getcwd() + name + ".dat", player)
+
 ###########################################
 #loading:*
-	if choice == "2":
+	if choice == "3":
 		location = input("Save file? ")
 		if os.path.exists(os.getcwd() + location):
 			player = load(os.getcwd() + location)
@@ -166,7 +177,7 @@ while choice != "0":
 			print("Save not found!")
 ###########################################
 #Suspects statement
-	if choice == "3":
+	if choice == "4":
 		print('''Millie Parker has been a maid in the in the Henderson
 house hold for 8 years. She took care of Josh henderson after his parents 
 died in a car crash 2 years before he enharited the Henderson house.
@@ -179,8 +190,9 @@ the kitchen talking to Elliot about the food he has preparded for Mr. Henderson
 
 		print('''---------------------------------------------------------------------
 ''')
-	if choice == "4":
-		printMap(RoomOrder)
-	if choice == "5":
-		printInventory()
 	
+	if choice == "5":
+		printMap(RoomOrder)
+
+	if choice == "6":
+		printInventory()
