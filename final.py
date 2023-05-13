@@ -63,20 +63,6 @@ def pickOption(options, questionText, name=True):
 
 
 class player():
-	#Description: Initialization function
-
-	#Arguments:
-	#	pos: Player Position
-	#	inventory: Array of current inventory
-	#	size: Maximum inventory size
-	#	solution: Solution to current play through
-	def __init__(self, pos, inventory, size, solution):
-		self.pos = pos
-		self.inventory = inventory
-		self.inventorySize = size
-		self.solution = solution
-		if solution == None:
-			solution = getRandSolution()
 	#Description: Get a dictionary of the current player information
 
 	#Arguments:
@@ -178,7 +164,9 @@ class player():
 	#		'down': Room below position
 	#		'left': Room to the left of position
 	#		'right': Room to the right of the position
-	def nearbyRooms(self, pos=player.pos):
+	def nearbyRooms(self, pos=None):
+		if pos == None:
+			pos = self.pos
 		levels = len(RoomOrder)
 		currentLevelLen = len(RoomOrder[pos[0]])
 		right,left,up,down = None,None,None,None
@@ -213,7 +201,9 @@ class player():
 	#	pos: position of room to print; default: current player position
 	#Returns:
 	#	None
-	def printRoom(self, pos=player.pos):
+	def printRoom(self, pos=None):
+		if pos == None:
+			pos = self.pos
 		print(RoomOrder[pos[0]][pos[1]].capitalize())
 	
 	#Description: Save player to file
@@ -223,7 +213,9 @@ class player():
 	#	player: Player object to save to file
 	#Returns:
 	#	None
-	def save(self, path, player=self):
+	def save(self, path, player=None):
+		if player == None:
+			player = self
 		with open(path, 'wb') as file:
 			pickle.dump(player.getDict(), file)
 
@@ -233,10 +225,26 @@ class player():
 	#	path: Path to save location
 	#Returns:
 	#	Player object of save position
-	def load(self, path) -> player:
+	def load(self, path):
 		with open(path) as file:
 			obj = pickle.load(file)
 		return player(obj['pos'],obj['inv'],obj['size'],obj['solution'])
+
+		
+	#Description: Initialization function
+
+	#Arguments:
+	#	pos: Player Position
+	#	inventory: Array of current inventory
+	#	size: Maximum inventory size
+	#	solution: Solution to current play through
+	def __init__(self, pos, inventory, size, solution):
+		self.pos = pos
+		self.inventory = inventory
+		self.inventorySize = size
+		self.solution = solution
+		if solution == None:
+			self.solution = self.getRandSolution()
 
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
