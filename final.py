@@ -30,11 +30,8 @@ def printMap(map):
 	print('------------------------------------------ \n')
 
 def printRoomMap(file):
-	information = numpy.load(file)
-	for row in information:
-		for item in information:
-			print(item, end='', flush=True)
-		print('')
+	file = open(file, 'r').read()
+	slowPrint(file)
 
 #Description: Return option selected by user from list
 
