@@ -17,6 +17,8 @@ class player():
 		self.inventory = inventory
 		self.inventorySize = size
 		self.solution = solution
+		if solution == None:
+			solution = getRandSolution()
 	#Description: Get a dictionary of the current player information
 
 	#Arguments:
@@ -40,13 +42,128 @@ class player():
 		self.inventorySize = dict['size']
 		self.solution = dict['solution']
 
+	#Description: Move current position of player in one of 4 directions
+
+	#Arguments:
+	#	dir: Direction to move player in: up, down, left, right
+	#Returns:
+	#	None
+	def move(dir):
+		if dir == 'right' and player.pos[1] < 2:
+			player.pos[1] += 1
+		if dir == 'left' and player.pos[1] > 0:
+			player.pos[1] -= 1
+		if dir == 'up' and player.pos[0] < 2:
+			player.pos[0] += 1
+		if dir == 'down' and player.pos[0] > 0:
+			player.pos[0] -= 1
+
+	#Description: Add item(s) to inventory
+
+	#Arguments:
+	#	item: Item to add to inventory
+	#	count: Amount of item to add to inventory
+	def addItem(item, count):
+		if item.lower() in Items and len(player.inventory)+count <= player.inventorySize:
+			for i in range(count):
+				player.inventory.append(item.lower())
+			slowPrint("Item(s) added to inventory")
+		elif not item.lower() in Items:
+			slowPrint('Item not found, here are the items available:')
+			for item in Items:
+				slowPrint(item.capitalize())
+		elif len(player.inventory) > player.inventorySize:
+			slowPrint('Iinventory is full')
+
+	#Description: Remove item(s) from inventory
+
+	#Arguments:
+	#	item: item to remove from inventory
+	#	count: amount of items to remove
+	#Returns:
+	#	None
+	def removeItem(item, count):
+		if item in player.inventory:
+			for i in range(count):
+				player.inventory.remove(item)
+			slowPrint("Item(s) removed from inventory")
+		else:
+			slowPrint("Item not in inventory")
+		
+	#Description: Prints the contents of the inventory
+
+	#Arguments:
+	#	None
+	#Returns:
+	#	None
+	def printInventory():
+		items = {}
+		if len(player.inventory) > 0:
+			slowPrint("Here is your inventory:")
+			for item in player.inventory:
+				if item in items:
+					items[item] = items[item] + 1
+				else:
+					items[item] = 1
+			for item in items:
+				slowPrint(item.capitalize() + ": " + str(items[item]))
+		else:
+			slowPrint("Your inventory is empty")
+
+	#Description: Return rooms in 4 directions around position
+
+	#Arguments
+	#	pos: Position to look at, default: current player position
+	#Returns:
+	#	Dictionary of 4 directional rooms: 
+	#		'up': Room above position
+	#		'down': Room below position
+	#		'left': Room to the left of position
+	#		'right': Room to the right of the position
+	def nearbyRooms(pos=player.pos):
+		levels = len(RoomOrder)
+		currentLevelLen = len(RoomOrder[pos[0]])
+		right,left,up,down = None,None,None,None
+		if pos[1]+1 <= currentLevelLen-1:
+			right = RoomOrder[pos[0]][pos[1]+1]
+		if pos[1]-1 >= 0:
+			left = RoomOrder[pos[0]][pos[1]-1]
+		if pos[0]+1 <= levels-1:
+			up = RoomOrder[pos[0]+1][pos[1]]
+		if pos[0]-1 >= 0:
+			down = RoomOrder[pos[0]-1][pos[1]]
+		return {'right':right,'left':left,'up':up,'down':down}
+
+	#Description: Return a random solution for player
+
+	#Arguments:
+	#	None
+	#Returns:
+	#	Dictionary of solution:
+	#		'weapon': Weapon used in solution
+	#		'room': Room of murder
+	#		'murderer': The killer
+	def getRandSolution():
+		weapon = Weapons[randint(0, len(Weapons)-1)]
+		room = Rooms[randint(0, len(Rooms)-1)]
+		murderer = People[randint(0, len(People)-1)]
+		return {'weapon':weapon, 'room':room, 'murderer':murderer}
+
+	#Description: Print room of position
+
+	#Arguments:
+	#	pos: position of room to print; default: current player position
+	#Returns:
+	#	None
+	def printRoom(pos=player.pos):
+		print(RoomOrder[pos[0]][pos[1]].capitalize())
 
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
 RoomOrder = [['kitchen','hallway','dining'],['library','ballroom','study'],['bathroom','living','closet']]
 People = ['maid', 'cook', 'wife', 'butler']
 Items = ['book','bucket','mop','music','keys']
-player = player([0,1], [], 15, ())
+player = player([0,1], [], 15, None)
 
 #SOLUTION
 weapon = None
@@ -63,74 +180,6 @@ def slowPrint(text, delay=0.005):
 		print(i, end='', flush=True)
 		sleep(delay)
 	print('')
-
-#Description: Add item(s) to inventory
-
-#Arguments:
-#	item: Item to add to inventory
-#	count: Amount of item to add to inventory
-def addItem(item, count):
-	if item.lower() in Items and len(player.inventory)+count <= player.inventorySize:
-		for i in range(count):
-			player.inventory.append(item.lower())
-		slowPrint("Item(s) added to inventory")
-	elif not item.lower() in Items:
-		slowPrint('Item not found, here are the items available:')
-		for item in Items:
-			slowPrint(item.capitalize())
-	elif len(player.inventory) > player.inventorySize:
-		slowPrint('Iinventory is full')
-
-#Description: Remove item(s) from inventory
-
-#Arguments:
-#	item: item to remove from inventory
-#	count: amount of items to remove
-#Returns:
-#	None
-def removeItem(item, count):
-	if item in player.inventory:
-		for i in range(count):
-			player.inventory.remove(item)
-		slowPrint("Item(s) removed from inventory")
-	else:
-		slowPrint("Item not in inventory")
-
-#Description: Prints the contents of the inventory
-
-#Arguments:
-#	None
-#Returns:
-#	None
-def printInventory():
-	items = {}
-	if len(player.inventory) > 0:
-		slowPrint("Here is your inventory:")
-		for item in player.inventory:
-			if item in items:
-				items[item] = items[item] + 1
-			else:
-				items[item] = 1
-		for item in items:
-			slowPrint(item.capitalize() + ": " + str(items[item]))
-	else:
-		slowPrint("Your inventory is empty")
-		
-#Description: Move current position of player in one of 4 directions
-
-#Arguments:
-#	dir: Direction to move player in: up, down, left, right
-#Returns:
-#	None
-def move(dir):
-	if dir == 'right' and player.pos[1] < 2:
-		player.pos[1] += 1
-	if dir == 'left' and player.pos[1] > 0:
-		player.pos[1] -= 1
-	if dir == 'up' and player.pos[0] < 2:
-		player.pos[0] += 1
-	if dir == 'down' and player.pos[0] > 0:
-		player.pos[0] -= 1
 
 #Description: Save player to file
 
@@ -168,30 +217,6 @@ def printMap(map):
 	print('\n You are in the ' + printRoom())
 	print('------------------------------------------ \n')
 
-#Description: Return rooms in 4 directions around position
-
-#Arguments
-#	pos: Position to look at, default: current player position
-#Returns:
-#	Dictionary of 4 directional rooms: 
-#		'up': Room above position
-#		'down': Room below position
-#		'left': Room to the left of position
-#		'right': Room to the right of the position
-def nearbyRooms(pos=player.pos):
-	levels = len(RoomOrder)
-	currentLevelLen = len(RoomOrder[pos[0]])
-	right,left,up,down = None,None,None,None
-	if pos[1]+1 <= currentLevelLen-1:
-		right = RoomOrder[pos[0]][pos[1]+1]
-	if pos[1]-1 >= 0:
-		left = RoomOrder[pos[0]][pos[1]-1]
-	if pos[0]+1 <= levels-1:
-		up = RoomOrder[pos[0]+1][pos[1]]
-	if pos[0]-1 >= 0:
-		down = RoomOrder[pos[0]-1][pos[1]]
-	return {'right':right,'left':left,'up':up,'down':down}
-
 #Description: Return option selected by user from list
 
 #Arguments: 
@@ -215,34 +240,6 @@ def pickOption(options, questionText):
 			return options[optionSelected-1]
 		elif not printed:
 			slowPrint("Invalid selection!")
-
-#Description: Print room of position
-
-#Arguments:
-#	pos: position of room to print; default: current player position
-#Returns:
-#	None
-def printRoom(pos=player.pos):
-	print(RoomOrder[pos[0]][pos[1]].capitalize())
-
-#Description: Return a random solution for player
-
-#Arguments:
-#	None
-#Returns:
-#	Dictionary of solution:
-#		'weapon': Weapon used in solution
-#		'room': Room of murder
-#		'murderer': The killer
-def getRandSolution():
-	weapon = Weapons[randint(0, len(Weapons)-1)]
-	room = Rooms[randint(0, len(Rooms)-1)]
-	murderer = People[randint(0, len(People)-1)]
-	return {'weapon':weapon, 'room':room, 'murderer':murderer}
-
-player.solution = getRandSolution()
-
-
 
 #############################start of the game###################################
 print("\tMan's Homocide\n")
