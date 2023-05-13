@@ -2,6 +2,7 @@ from time import sleep
 from random import randint
 import pickle
 import os
+import numpy
 #Description: Prints text at designated speed
 
 #Arguments:
@@ -27,6 +28,13 @@ def printMap(map):
 		print("\n", end='', flush=True)
 	print('\n You are in the ' + printRoom())
 	print('------------------------------------------ \n')
+
+def printRoomMap(file):
+	information = numpy.load(file)
+	for row in information:
+		for item in information:
+			print(item, end='', flush=True)
+		print('')
 
 #Description: Return option selected by user from list
 
