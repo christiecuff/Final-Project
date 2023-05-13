@@ -2,6 +2,55 @@ from time import sleep
 from random import randint
 import pickle
 import os
+#Description: Prints text at designated speed
+
+#Arguments:
+#	text: Text to print
+#	delay(Seconds): delay between characters, default:0.005 seconds
+def slowPrint(text, delay=0.005):
+	for i in text:
+		print(i, end='', flush=True)
+		sleep(delay)
+	print('')
+
+		
+#Description: Print map in primitive format		
+
+#Arguments:
+#	map: 2 Dimensional Array of a map of place...Prints room names in position
+#Returns:
+#	None
+def printMap(map):
+	for level in map:
+		for room in level:
+			print(room + "; ", end='', flush=True)
+		print("\n", end='', flush=True)
+	print('\n You are in the ' + printRoom())
+	print('------------------------------------------ \n')
+
+#Description: Return option selected by user from list
+
+#Arguments: 
+#	options: List of strings of the options
+#	questionText: Text to be printed when selecting
+#Return:
+#	String value of selected option
+def pickOption(options, questionText):
+	for i, o in enumerate(options):
+		slowPrint(str(i+1) + ": " + o + "\n")
+	failed = True
+	while failed:
+		printed = False
+		try:
+			optionSelected = int(input(questionText + ": "))
+		except:
+			slowPrint("Invalid selection!")
+			printed = True
+		if optionSelected > 0 and optionSelected <= len(options):
+			failed = False
+			return options[optionSelected-1]
+		elif not printed:
+			slowPrint("Invalid selection!")
 
 
 class player():
@@ -48,7 +97,7 @@ class player():
 	#	dir: Direction to move player in: up, down, left, right
 	#Returns:
 	#	None
-	def move(dir):
+	def move(self, dir):
 		if dir == 'right' and player.pos[1] < 2:
 			player.pos[1] += 1
 		if dir == 'left' and player.pos[1] > 0:
@@ -63,7 +112,7 @@ class player():
 	#Arguments:
 	#	item: Item to add to inventory
 	#	count: Amount of item to add to inventory
-	def addItem(item, count):
+	def addItem(self, item, count):
 		if item.lower() in Items and len(player.inventory)+count <= player.inventorySize:
 			for i in range(count):
 				player.inventory.append(item.lower())
@@ -82,7 +131,7 @@ class player():
 	#	count: amount of items to remove
 	#Returns:
 	#	None
-	def removeItem(item, count):
+	def removeItem(self, item, count):
 		if item in player.inventory:
 			for i in range(count):
 				player.inventory.remove(item)
@@ -96,7 +145,7 @@ class player():
 	#	None
 	#Returns:
 	#	None
-	def printInventory():
+	def printInventory(self):
 		items = {}
 		if len(player.inventory) > 0:
 			slowPrint("Here is your inventory:")
@@ -120,7 +169,7 @@ class player():
 	#		'down': Room below position
 	#		'left': Room to the left of position
 	#		'right': Room to the right of the position
-	def nearbyRooms(pos=player.pos):
+	def nearbyRooms(self, pos=player.pos):
 		levels = len(RoomOrder)
 		currentLevelLen = len(RoomOrder[pos[0]])
 		right,left,up,down = None,None,None,None
@@ -143,7 +192,7 @@ class player():
 	#		'weapon': Weapon used in solution
 	#		'room': Room of murder
 	#		'murderer': The killer
-	def getRandSolution():
+	def getRandSolution(self):
 		weapon = Weapons[randint(0, len(Weapons)-1)]
 		room = Rooms[randint(0, len(Rooms)-1)]
 		murderer = People[randint(0, len(People)-1)]
@@ -155,8 +204,30 @@ class player():
 	#	pos: position of room to print; default: current player position
 	#Returns:
 	#	None
-	def printRoom(pos=player.pos):
+	def printRoom(self, pos=player.pos):
 		print(RoomOrder[pos[0]][pos[1]].capitalize())
+	
+	#Description: Save player to file
+
+	#Arguments:
+	#	path: Path to save location
+	#	player: Player object to save to file
+	#Returns:
+	#	None
+	def save(self, path, player=self):
+		with open(path, 'wb') as file:
+			pickle.dump(player.getDict(), file)
+
+	#Description: Load player from file
+
+	#Arguments:
+	#	path: Path to save location
+	#Returns:
+	#	Player object of save position
+	def load(self, path) -> player:
+		with open(path) as file:
+			obj = pickle.load(file)
+		return player(obj['pos'],obj['inv'],obj['size'],obj['solution'])
 
 Weapons = ['knife','pen']
 Rooms = ['study','hallway','dining','kitchen','ballroom','library','bathroom','closet','living']
@@ -166,80 +237,10 @@ Items = ['book','bucket','mop','music','keys']
 player = player([0,1], [], 15, None)
 
 #SOLUTION
-weapon = None
-room = None
-murderer = None
+weapon = player.solution['weapon']
+room = player.solution['room']
+murderer = player.solution['murderer']
 
-#Description: Prints text at designated speed
-
-#Arguments:
-#	text: Text to print
-#	delay(Seconds): delay between characters, default:0.005 seconds
-def slowPrint(text, delay=0.005):
-	for i in text:
-		print(i, end='', flush=True)
-		sleep(delay)
-	print('')
-
-#Description: Save player to file
-
-#Arguments:
-#	path: Path to save location
-#	player: Player object to save to file
-#Returns:
-#	None
-def save(path, player):
-	with open(path, 'wb') as file:
-		pickle.dump(player.getDict(), file)
-
-#Description: Load player from file
-
-#Arguments:
-#	path: Path to save location
-#Returns:
-#	Player object of save position
-def load(path) -> player:
-	with open(path) as file:
-		obj = pickle.load(file)
-	return player(obj['pos'],obj['inv'],obj['size'],obj['solution'])
-		
-#Description: Print map in primitive format		
-
-#Arguments:
-#	map: 2 Dimensional Array of a map of place...Prints room names in position
-#Returns:
-#	None
-def printMap(map):
-	for level in map:
-		for room in level:
-			print(room + "; ", end='', flush=True)
-		print("\n", end='', flush=True)
-	print('\n You are in the ' + printRoom())
-	print('------------------------------------------ \n')
-
-#Description: Return option selected by user from list
-
-#Arguments: 
-#	options: List of strings of the options
-#	questionText: Text to be printed when selecting
-#Return:
-#	String value of selected option
-def pickOption(options, questionText):
-	for i, o in enumerate(options):
-		slowPrint(str(i+1) + ": " + o + "\n")
-	failed = True
-	while failed:
-		printed = False
-		try:
-			optionSelected = int(input(questionText + ": "))
-		except:
-			slowPrint("Invalid selection!")
-			printed = True
-		if optionSelected > 0 and optionSelected <= len(options):
-			failed = False
-			return options[optionSelected-1]
-		elif not printed:
-			slowPrint("Invalid selection!")
 
 #############################start of the game###################################
 print("\tMan's Homocide\n")
@@ -285,29 +286,29 @@ while choice != "0":
 		if os.path.exists(os.getcwd() + name + ".dat"):
 			overwrite = input("Save file exists, overwrite? [y/n]")
 			if overwrite == "y":
-				save(os.getcwd() + name + ".dat", player)
+				player.save(os.getcwd() + name + ".dat")
 			elif overwrite == "n":
 				newName == ""
 				while not newName == name + ".dat":
 					newName = input("Save name? ")
-				save(os.getcwd() + newName, player)
+				player.save(os.getcwd() + newName)
 		else:
-			save(os.getcwd() + name + ".dat", player)
+			player.save(os.getcwd() + name + ".dat")
 ###########################################
 #save:*
 	if choice == "2":
 		if not os.path.exists(os.getcwd() + name + ".dat"):
 			new = input("Create new save? [y/n] ")
 			if new == 'y':
-				save(os.getcwd() + name + ".dat", player)
+				player.save(os.getcwd() + name + ".dat")
 		else:
-			save(os.getcwd() + name + ".dat")
+			player.save(os.getcwd() + name + ".dat")
 ###########################################
 #loading:*
 	if choice == "3":
 		location = input("Save file? ")
 		if os.path.exists(os.getcwd() + location):
-			player = load(os.getcwd() + location)
+			player = player.load(os.getcwd() + location)
 		else:
 			print("Save not found!")
 ###########################################
