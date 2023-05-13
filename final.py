@@ -33,9 +33,10 @@ def printMap(map):
 #Arguments: 
 #	options: List of strings of the options
 #	questionText: Text to be printed when selecting
+#	name: Boolean whether you want object or position to be returned
 #Return:
 #	String value of selected option
-def pickOption(options, questionText):
+def pickOption(options, questionText, name=True):
 	for i, o in enumerate(options):
 		slowPrint(str(i+1) + ": " + o + "\n")
 	failed = True
@@ -48,7 +49,10 @@ def pickOption(options, questionText):
 			printed = True
 		if optionSelected > 0 and optionSelected <= len(options):
 			failed = False
-			return options[optionSelected-1]
+			if name:
+				return options[optionSelected-1]
+			else:
+				return optionSelected-1
 		elif not printed:
 			slowPrint("Invalid selection!")
 
